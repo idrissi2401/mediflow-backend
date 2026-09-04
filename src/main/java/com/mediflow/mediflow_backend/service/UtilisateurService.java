@@ -40,4 +40,8 @@ public class UtilisateurService {
 
         return utilisateurRepository.save(utilisateur);
     }
+
+    public Utilisateur updateUtilisateur(Utilisateur utilisateur) {
+        return utilisateurRepository.save(utilisateur);
+    }
 }
