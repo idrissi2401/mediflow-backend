@@ -5,6 +5,7 @@ import com.mediflow.mediflow_backend.service.RendezVousService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,19 @@ public class RendezVousController {
         }
 
         return ResponseEntity.ok(rendezVous.get());
+    }
+
+    @GetMapping("/medecin/{medecinId}")
+    public List<RendezVous> getRendezVousMedecin(
+            @PathVariable Long medecinId,
+            @RequestParam LocalDateTime debut,
+            @RequestParam LocalDateTime fin) {
+
+        return rendezVousService.getRendezVousMedecin(
+                medecinId,
+                debut,
+                fin
+        );
     }
 
     @PostMapping

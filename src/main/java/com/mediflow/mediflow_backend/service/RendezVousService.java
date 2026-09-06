@@ -4,6 +4,7 @@ import com.mediflow.mediflow_backend.entity.RendezVous;
 import com.mediflow.mediflow_backend.repository.RendezVousRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,19 @@ public class RendezVousService {
 
     public Optional<RendezVous> getRendezVousById(Long id) {
         return rendezVousRepository.findById(id);
+    }
+
+    public List<RendezVous> getRendezVousMedecin(
+            Long medecinId,
+            LocalDateTime debut,
+            LocalDateTime fin) {
+
+        return rendezVousRepository
+                .findByMedecinIdAndDateHeureBetweenOrderByDateHeure(
+                        medecinId,
+                        debut,
+                        fin
+                );
     }
 
     public RendezVous saveRendezVous(RendezVous rendezVous) {
