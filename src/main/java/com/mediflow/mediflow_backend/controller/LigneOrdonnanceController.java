@@ -37,6 +37,14 @@ public class LigneOrdonnanceController {
         return ResponseEntity.ok(ligne.get());
     }
 
+    @GetMapping("/ordonnance/{ordonnanceId}")
+    public List<LigneOrdonnance> getLignesByOrdonnance(
+            @PathVariable Long ordonnanceId) {
+
+        return ligneOrdonnanceService
+                .getLignesByOrdonnance(ordonnanceId);
+    }
+
     @PostMapping
     public LigneOrdonnance createLigne(
             @RequestBody LigneOrdonnance ligneOrdonnance) {

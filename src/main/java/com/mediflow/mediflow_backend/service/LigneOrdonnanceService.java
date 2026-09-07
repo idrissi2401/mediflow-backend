@@ -25,6 +25,10 @@ public class LigneOrdonnanceService {
         return ligneOrdonnanceRepository.findById(id);
     }
 
+    public List<LigneOrdonnance> getLignesByOrdonnance(Long ordonnanceId) {
+        return ligneOrdonnanceRepository.findByOrdonnanceId(ordonnanceId);
+    }
+
     public LigneOrdonnance saveLigne(LigneOrdonnance ligneOrdonnance) {
         return ligneOrdonnanceRepository.save(ligneOrdonnance);
     }
