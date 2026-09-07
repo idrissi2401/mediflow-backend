@@ -4,7 +4,6 @@ import com.mediflow.mediflow_backend.entity.Utilisateur;
 import com.mediflow.mediflow_backend.repository.UtilisateurRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +41,10 @@ public class UtilisateurService {
     }
 
     public Utilisateur updateUtilisateur(Utilisateur utilisateur) {
+        utilisateur.setMotDePasse(
+                passwordEncoder.encode(utilisateur.getMotDePasse())
+        );
+
         return utilisateurRepository.save(utilisateur);
     }
 }
