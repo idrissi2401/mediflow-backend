@@ -23,8 +23,10 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UtilisateurRepository utilisateurRepository;
 
-    public JwtFilter(JwtService jwtService,
-                     UtilisateurRepository utilisateurRepository) {
+    public JwtFilter(
+            JwtService jwtService,
+            UtilisateurRepository utilisateurRepository
+    ) {
         this.jwtService = jwtService;
         this.utilisateurRepository = utilisateurRepository;
     }
@@ -36,28 +38,34 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader =
+                request.getHeader("Authorization");
 
         if (authorizationHeader != null &&
                 authorizationHeader.startsWith("Bearer ")) {
 
-            String token = authorizationHeader.substring(7);
+            String token =
+                    authorizationHeader.substring(7);
 
             try {
-                String email = jwtService.extractEmail(token);
+
+                String email =
+                        jwtService.extractEmail(token);
 
                 Optional<Utilisateur> utilisateurOptional =
                         utilisateurRepository.findByEmail(email);
 
                 if (utilisateurOptional.isPresent()) {
 
-                    Utilisateur utilisateur = utilisateurOptional.get();
+                    Utilisateur utilisateur =
+                            utilisateurOptional.get();
 
                     if (utilisateur.isActif()) {
 
                         SimpleGrantedAuthority authority =
                                 new SimpleGrantedAuthority(
-                                        "ROLE_" + utilisateur.getRole().name()
+                                        "ROLE_" +
+                                                utilisateur.getRole().name()
                                 );
 
                         UsernamePasswordAuthenticationToken authentication =
@@ -67,7 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                         List.of(authority)
                                 );
 
-                        SecurityContextHolder.getContext()
+                        SecurityContextHolder
+                                .getContext()
                                 .setAuthentication(authentication);
                     }
                 }
@@ -76,6 +85,9 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(
+                request,
+                response
+        );
     }
 }
