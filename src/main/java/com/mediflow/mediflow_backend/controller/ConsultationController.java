@@ -14,17 +14,24 @@ public class ConsultationController {
 
     private final ConsultationService consultationService;
 
-    public ConsultationController(ConsultationService consultationService) {
+    public ConsultationController(
+            ConsultationService consultationService
+    ) {
         this.consultationService = consultationService;
     }
+
 
     @GetMapping
     public List<Consultation> getAllConsultations() {
         return consultationService.getAllConsultations();
     }
 
+
+    // Récupérer une consultation par son ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getConsultationById(@PathVariable Long id) {
+    public ResponseEntity<?> getConsultationById(
+            @PathVariable Long id
+    ) {
 
         Optional<Consultation> consultation =
                 consultationService.getConsultationById(id);
@@ -33,38 +40,85 @@ public class ConsultationController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(consultation.get());
+        return ResponseEntity.ok(
+                consultation.get()
+        );
     }
 
+
+    // Récupérer la consultation liée à un rendez-vous
+    @GetMapping("/rendez-vous/{rendezVousId}")
+    public ResponseEntity<?> getConsultationByRendezVousId(
+            @PathVariable Long rendezVousId
+    ) {
+
+        Optional<Consultation> consultation =
+                consultationService
+                        .getConsultationByRendezVousId(
+                                rendezVousId
+                        );
+
+        if (consultation.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(
+                consultation.get()
+        );
+    }
+
+
+    // Créer une consultation
     @PostMapping
     public Consultation createConsultation(
-            @RequestBody Consultation consultation) {
+            @RequestBody Consultation consultation
+    ) {
 
-        return consultationService.saveConsultation(consultation);
+        return consultationService
+                .saveConsultation(consultation);
     }
 
+
+    // Modifier une consultation
     @PutMapping("/{id}")
     public ResponseEntity<?> updateConsultation(
             @PathVariable Long id,
-            @RequestBody Consultation consultationModifiee) {
+            @RequestBody Consultation consultationModifiee
+    ) {
 
         Optional<Consultation> consultationOptional =
-                consultationService.getConsultationById(id);
+                consultationService
+                        .getConsultationById(id);
 
         if (consultationOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Consultation consultation = consultationOptional.get();
+        Consultation consultation =
+                consultationOptional.get();
 
-        consultation.setDateHeure(consultationModifiee.getDateHeure());
-        consultation.setNotes(consultationModifiee.getNotes());
-        consultation.setDiagnostic(consultationModifiee.getDiagnostic());
-        consultation.setRendezVous(consultationModifiee.getRendezVous());
+        consultation.setDateHeure(
+                consultationModifiee.getDateHeure()
+        );
+
+        consultation.setNotes(
+                consultationModifiee.getNotes()
+        );
+
+        consultation.setDiagnostic(
+                consultationModifiee.getDiagnostic()
+        );
+
+        consultation.setRendezVous(
+                consultationModifiee.getRendezVous()
+        );
 
         Consultation consultationEnregistree =
-                consultationService.updateConsultation(consultation);
+                consultationService
+                        .updateConsultation(consultation);
 
-        return ResponseEntity.ok(consultationEnregistree);
+        return ResponseEntity.ok(
+                consultationEnregistree
+        );
     }
 }

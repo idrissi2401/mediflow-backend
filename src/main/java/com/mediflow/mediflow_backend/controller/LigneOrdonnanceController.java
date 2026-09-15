@@ -15,17 +15,30 @@ public class LigneOrdonnanceController {
     private final LigneOrdonnanceService ligneOrdonnanceService;
 
     public LigneOrdonnanceController(
-            LigneOrdonnanceService ligneOrdonnanceService) {
+            LigneOrdonnanceService ligneOrdonnanceService
+    ) {
         this.ligneOrdonnanceService = ligneOrdonnanceService;
     }
+
+
+    // =========================
+    // TOUTES LES LIGNES
+    // =========================
 
     @GetMapping
     public List<LigneOrdonnance> getAllLignes() {
         return ligneOrdonnanceService.getAllLignes();
     }
 
+
+    // =========================
+    // LIGNE PAR ID
+    // =========================
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getLigneById(@PathVariable Long id) {
+    public ResponseEntity<?> getLigneById(
+            @PathVariable Long id
+    ) {
 
         Optional<LigneOrdonnance> ligne =
                 ligneOrdonnanceService.getLigneById(id);
@@ -37,25 +50,44 @@ public class LigneOrdonnanceController {
         return ResponseEntity.ok(ligne.get());
     }
 
+
+    // =========================
+    // LIGNES PAR ORDONNANCE
+    // =========================
+
     @GetMapping("/ordonnance/{ordonnanceId}")
     public List<LigneOrdonnance> getLignesByOrdonnance(
-            @PathVariable Long ordonnanceId) {
+            @PathVariable Long ordonnanceId
+    ) {
 
         return ligneOrdonnanceService
                 .getLignesByOrdonnance(ordonnanceId);
     }
 
+
+    // =========================
+    // CRÉER UNE LIGNE
+    // =========================
+
     @PostMapping
     public LigneOrdonnance createLigne(
-            @RequestBody LigneOrdonnance ligneOrdonnance) {
+            @RequestBody LigneOrdonnance ligneOrdonnance
+    ) {
 
-        return ligneOrdonnanceService.saveLigne(ligneOrdonnance);
+        return ligneOrdonnanceService
+                .saveLigne(ligneOrdonnance);
     }
+
+
+    // =========================
+    // MODIFIER UNE LIGNE
+    // =========================
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLigne(
             @PathVariable Long id,
-            @RequestBody LigneOrdonnance ligneModifiee) {
+            @RequestBody LigneOrdonnance ligneModifiee
+    ) {
 
         Optional<LigneOrdonnance> ligneOptional =
                 ligneOrdonnanceService.getLigneById(id);
@@ -64,17 +96,57 @@ public class LigneOrdonnanceController {
             return ResponseEntity.notFound().build();
         }
 
-        LigneOrdonnance ligne = ligneOptional.get();
+        LigneOrdonnance ligne =
+                ligneOptional.get();
 
-        ligne.setMedicament(ligneModifiee.getMedicament());
-        ligne.setDosage(ligneModifiee.getDosage());
-        ligne.setFrequence(ligneModifiee.getFrequence());
-        ligne.setDuree(ligneModifiee.getDuree());
-        ligne.setOrdonnance(ligneModifiee.getOrdonnance());
+        ligne.setMedicament(
+                ligneModifiee.getMedicament()
+        );
+
+        ligne.setDosage(
+                ligneModifiee.getDosage()
+        );
+
+        ligne.setFrequence(
+                ligneModifiee.getFrequence()
+        );
+
+        ligne.setDuree(
+                ligneModifiee.getDuree()
+        );
+
+        ligne.setOrdonnance(
+                ligneModifiee.getOrdonnance()
+        );
 
         LigneOrdonnance ligneEnregistree =
-                ligneOrdonnanceService.updateLigne(ligne);
+                ligneOrdonnanceService
+                        .updateLigne(ligne);
 
-        return ResponseEntity.ok(ligneEnregistree);
+        return ResponseEntity.ok(
+                ligneEnregistree
+        );
+    }
+
+
+    // =========================
+    // SUPPRIMER UNE LIGNE
+    // =========================
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteLigne(
+            @PathVariable Long id
+    ) {
+
+        Optional<LigneOrdonnance> ligneOptional =
+                ligneOrdonnanceService.getLigneById(id);
+
+        if (ligneOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ligneOrdonnanceService.deleteLigne(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

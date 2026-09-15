@@ -12,7 +12,9 @@ public class OrdonnanceService {
 
     private final OrdonnanceRepository ordonnanceRepository;
 
-    public OrdonnanceService(OrdonnanceRepository ordonnanceRepository) {
+    public OrdonnanceService(
+            OrdonnanceRepository ordonnanceRepository
+    ) {
         this.ordonnanceRepository = ordonnanceRepository;
     }
 
@@ -22,6 +24,14 @@ public class OrdonnanceService {
 
     public Optional<Ordonnance> getOrdonnanceById(Long id) {
         return ordonnanceRepository.findById(id);
+    }
+
+    // Récupérer l'ordonnance liée à une consultation
+    public Optional<Ordonnance> getOrdonnanceByConsultationId(
+            Long consultationId
+    ) {
+        return ordonnanceRepository
+                .findByConsultationId(consultationId);
     }
 
     public Ordonnance saveOrdonnance(Ordonnance ordonnance) {

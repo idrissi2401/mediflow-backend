@@ -14,17 +14,31 @@ public class OrdonnanceController {
 
     private final OrdonnanceService ordonnanceService;
 
-    public OrdonnanceController(OrdonnanceService ordonnanceService) {
+    public OrdonnanceController(
+            OrdonnanceService ordonnanceService
+    ) {
         this.ordonnanceService = ordonnanceService;
     }
+
+
+    // =========================
+    // TOUTES LES ORDONNANCES
+    // =========================
 
     @GetMapping
     public List<Ordonnance> getAllOrdonnances() {
         return ordonnanceService.getAllOrdonnances();
     }
 
+
+    // =========================
+    // ORDONNANCE PAR ID
+    // =========================
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrdonnanceById(@PathVariable Long id) {
+    public ResponseEntity<?> getOrdonnanceById(
+            @PathVariable Long id
+    ) {
 
         Optional<Ordonnance> ordonnance =
                 ordonnanceService.getOrdonnanceById(id);
@@ -33,36 +47,86 @@ public class OrdonnanceController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(ordonnance.get());
+        return ResponseEntity.ok(
+                ordonnance.get()
+        );
     }
+
+
+    // =========================
+    // ORDONNANCE PAR CONSULTATION
+    // =========================
+
+    @GetMapping("/consultation/{consultationId}")
+    public ResponseEntity<?> getOrdonnanceByConsultationId(
+            @PathVariable Long consultationId
+    ) {
+
+        Optional<Ordonnance> ordonnance =
+                ordonnanceService
+                        .getOrdonnanceByConsultationId(
+                                consultationId
+                        );
+
+        if (ordonnance.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(
+                ordonnance.get()
+        );
+    }
+
+
+    // =========================
+    // CRÉER UNE ORDONNANCE
+    // =========================
 
     @PostMapping
     public Ordonnance createOrdonnance(
-            @RequestBody Ordonnance ordonnance) {
+            @RequestBody Ordonnance ordonnance
+    ) {
 
-        return ordonnanceService.saveOrdonnance(ordonnance);
+        return ordonnanceService
+                .saveOrdonnance(ordonnance);
     }
+
+
+    // =========================
+    // MODIFIER UNE ORDONNANCE
+    // =========================
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrdonnance(
             @PathVariable Long id,
-            @RequestBody Ordonnance ordonnanceModifiee) {
+            @RequestBody Ordonnance ordonnanceModifiee
+    ) {
 
         Optional<Ordonnance> ordonnanceOptional =
-                ordonnanceService.getOrdonnanceById(id);
+                ordonnanceService
+                        .getOrdonnanceById(id);
 
         if (ordonnanceOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Ordonnance ordonnance = ordonnanceOptional.get();
+        Ordonnance ordonnance =
+                ordonnanceOptional.get();
 
-        ordonnance.setDateHeure(ordonnanceModifiee.getDateHeure());
-        ordonnance.setConsultation(ordonnanceModifiee.getConsultation());
+        ordonnance.setDateHeure(
+                ordonnanceModifiee.getDateHeure()
+        );
+
+        ordonnance.setConsultation(
+                ordonnanceModifiee.getConsultation()
+        );
 
         Ordonnance ordonnanceEnregistree =
-                ordonnanceService.updateOrdonnance(ordonnance);
+                ordonnanceService
+                        .updateOrdonnance(ordonnance);
 
-        return ResponseEntity.ok(ordonnanceEnregistree);
+        return ResponseEntity.ok(
+                ordonnanceEnregistree
+        );
     }
 }

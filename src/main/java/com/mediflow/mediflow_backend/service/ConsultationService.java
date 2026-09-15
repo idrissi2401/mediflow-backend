@@ -12,7 +12,9 @@ public class ConsultationService {
 
     private final ConsultationRepository consultationRepository;
 
-    public ConsultationService(ConsultationRepository consultationRepository) {
+    public ConsultationService(
+            ConsultationRepository consultationRepository
+    ) {
         this.consultationRepository = consultationRepository;
     }
 
@@ -22,6 +24,13 @@ public class ConsultationService {
 
     public Optional<Consultation> getConsultationById(Long id) {
         return consultationRepository.findById(id);
+    }
+
+    // Récupérer la consultation liée à un rendez-vous
+    public Optional<Consultation> getConsultationByRendezVousId(
+            Long rendezVousId
+    ) {
+        return consultationRepository.findByRendezVousId(rendezVousId);
     }
 
     public Consultation saveConsultation(Consultation consultation) {
