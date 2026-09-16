@@ -18,26 +18,84 @@ public class ConsultationService {
         this.consultationRepository = consultationRepository;
     }
 
+
+    // =========================
+    // TOUTES LES CONSULTATIONS
+    // =========================
+
     public List<Consultation> getAllConsultations() {
+
         return consultationRepository.findAll();
     }
 
-    public Optional<Consultation> getConsultationById(Long id) {
+
+    // =========================
+    // CONSULTATION PAR ID
+    // =========================
+
+    public Optional<Consultation> getConsultationById(
+            Long id
+    ) {
+
         return consultationRepository.findById(id);
     }
 
-    // Récupérer la consultation liée à un rendez-vous
-    public Optional<Consultation> getConsultationByRendezVousId(
+
+    // =========================
+    // CONSULTATION PAR
+    // RENDEZ-VOUS
+    // =========================
+
+    public Optional<Consultation>
+    getConsultationByRendezVousId(
             Long rendezVousId
     ) {
-        return consultationRepository.findByRendezVousId(rendezVousId);
+
+        return consultationRepository
+                .findByRendezVousId(
+                        rendezVousId
+                );
     }
 
-    public Consultation saveConsultation(Consultation consultation) {
-        return consultationRepository.save(consultation);
+
+    // =========================
+    // CONSULTATIONS PAR PATIENT
+    // =========================
+
+    public List<Consultation>
+    getConsultationsByPatient(
+            Long patientId
+    ) {
+
+        return consultationRepository
+                .findByRendezVousPatientIdOrderByDateHeureDesc(
+                        patientId
+                );
     }
 
-    public Consultation updateConsultation(Consultation consultation) {
-        return consultationRepository.save(consultation);
+
+    // =========================
+    // CRÉER UNE CONSULTATION
+    // =========================
+
+    public Consultation saveConsultation(
+            Consultation consultation
+    ) {
+
+        return consultationRepository
+                .save(consultation);
+    }
+
+
+    // =========================
+    // MODIFIER UNE CONSULTATION
+    // =========================
+
+    public Consultation updateConsultation(
+            Consultation consultation
+    ) {
+
+        return consultationRepository
+                .save(consultation);
     }
 }

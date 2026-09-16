@@ -21,23 +21,36 @@ public class ConsultationController {
     }
 
 
+    // =========================
+    // TOUTES LES CONSULTATIONS
+    // =========================
+
     @GetMapping
     public List<Consultation> getAllConsultations() {
-        return consultationService.getAllConsultations();
+
+        return consultationService
+                .getAllConsultations();
     }
 
 
-    // Récupérer une consultation par son ID
+    // =========================
+    // CONSULTATION PAR ID
+    // =========================
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getConsultationById(
             @PathVariable Long id
     ) {
 
         Optional<Consultation> consultation =
-                consultationService.getConsultationById(id);
+                consultationService
+                        .getConsultationById(id);
 
         if (consultation.isEmpty()) {
-            return ResponseEntity.notFound().build();
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
         }
 
         return ResponseEntity.ok(
@@ -46,7 +59,11 @@ public class ConsultationController {
     }
 
 
-    // Récupérer la consultation liée à un rendez-vous
+    // =========================
+    // CONSULTATION PAR
+    // RENDEZ-VOUS
+    // =========================
+
     @GetMapping("/rendez-vous/{rendezVousId}")
     public ResponseEntity<?> getConsultationByRendezVousId(
             @PathVariable Long rendezVousId
@@ -59,7 +76,10 @@ public class ConsultationController {
                         );
 
         if (consultation.isEmpty()) {
-            return ResponseEntity.notFound().build();
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
         }
 
         return ResponseEntity.ok(
@@ -68,18 +88,48 @@ public class ConsultationController {
     }
 
 
-    // Créer une consultation
+    // =========================
+    // CONSULTATIONS PAR PATIENT
+    // =========================
+
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<Consultation>>
+    getConsultationsByPatient(
+            @PathVariable Long patientId
+    ) {
+
+        List<Consultation> consultations =
+                consultationService
+                        .getConsultationsByPatient(
+                                patientId
+                        );
+
+        return ResponseEntity.ok(
+                consultations
+        );
+    }
+
+
+    // =========================
+    // CRÉER UNE CONSULTATION
+    // =========================
+
     @PostMapping
     public Consultation createConsultation(
             @RequestBody Consultation consultation
     ) {
 
         return consultationService
-                .saveConsultation(consultation);
+                .saveConsultation(
+                        consultation
+                );
     }
 
 
-    // Modifier une consultation
+    // =========================
+    // MODIFIER UNE CONSULTATION
+    // =========================
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateConsultation(
             @PathVariable Long id,
@@ -91,31 +141,43 @@ public class ConsultationController {
                         .getConsultationById(id);
 
         if (consultationOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
         }
 
         Consultation consultation =
                 consultationOptional.get();
 
+
         consultation.setDateHeure(
-                consultationModifiee.getDateHeure()
+                consultationModifiee
+                        .getDateHeure()
         );
 
         consultation.setNotes(
-                consultationModifiee.getNotes()
+                consultationModifiee
+                        .getNotes()
         );
 
         consultation.setDiagnostic(
-                consultationModifiee.getDiagnostic()
+                consultationModifiee
+                        .getDiagnostic()
         );
 
         consultation.setRendezVous(
-                consultationModifiee.getRendezVous()
+                consultationModifiee
+                        .getRendezVous()
         );
+
 
         Consultation consultationEnregistree =
                 consultationService
-                        .updateConsultation(consultation);
+                        .updateConsultation(
+                                consultation
+                        );
+
 
         return ResponseEntity.ok(
                 consultationEnregistree
