@@ -86,6 +86,7 @@ public class RendezVousController {
         rendezVous.setAnnule(rendezVousModifie.isAnnule());
         rendezVous.setPatient(rendezVousModifie.getPatient());
         rendezVous.setMedecin(rendezVousModifie.getMedecin());
+        rendezVous.setAccueil(rendezVousModifie.getAccueil());
 
         RendezVous rendezVousEnregistre =
                 rendezVousService.updateRendezVous(rendezVous);

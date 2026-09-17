@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
 
+    // =========================
+    // RENDEZ-VOUS MÉDECIN
+    // =========================
+
     boolean existsByMedecinIdAndDateHeureAndAnnuleFalse(
             Long medecinId,
             LocalDateTime dateHeure
@@ -18,4 +22,31 @@ public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
             LocalDateTime debut,
             LocalDateTime fin
     );
+
+
+    // =========================
+    // RENDEZ-VOUS ACCUEIL
+    // =========================
+
+    boolean existsByAccueilIdAndDateHeureAndAnnuleFalse(
+            Long accueilId,
+            LocalDateTime dateHeure
+    );
+
+    List<RendezVous> findByAccueilIdAndDateHeureBetweenOrderByDateHeure(
+            Long accueilId,
+            LocalDateTime debut,
+            LocalDateTime fin
+    );
+
+
+    // =========================
+    // RENDEZ-VOUS PATIENT
+    // =========================
+
+    boolean existsByPatientIdAndDateHeureAndAnnuleFalse(
+            Long patientId,
+            LocalDateTime dateHeure
+    );
+
 }

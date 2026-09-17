@@ -25,12 +25,20 @@ public class RendezVous {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
+    // Rendez-vous médical
     @ManyToOne
-    @JoinColumn(name = "medecin_id", nullable = false)
+    @JoinColumn(name = "medecin_id")
     private Utilisateur medecin;
+
+    // Rendez-vous administratif
+    @ManyToOne
+    @JoinColumn(name = "accueil_id")
+    private Utilisateur accueil;
+
 
     public RendezVous() {
     }
+
 
     public Long getId() {
         return id;
@@ -40,6 +48,7 @@ public class RendezVous {
         this.id = id;
     }
 
+
     public LocalDateTime getDateHeure() {
         return dateHeure;
     }
@@ -47,6 +56,7 @@ public class RendezVous {
     public void setDateHeure(LocalDateTime dateHeure) {
         this.dateHeure = dateHeure;
     }
+
 
     public String getMotif() {
         return motif;
@@ -56,6 +66,7 @@ public class RendezVous {
         this.motif = motif;
     }
 
+
     public boolean isAnnule() {
         return annule;
     }
@@ -63,6 +74,7 @@ public class RendezVous {
     public void setAnnule(boolean annule) {
         this.annule = annule;
     }
+
 
     public Patient getPatient() {
         return patient;
@@ -72,6 +84,7 @@ public class RendezVous {
         this.patient = patient;
     }
 
+
     public Utilisateur getMedecin() {
         return medecin;
     }
@@ -79,4 +92,14 @@ public class RendezVous {
     public void setMedecin(Utilisateur medecin) {
         this.medecin = medecin;
     }
+
+
+    public Utilisateur getAccueil() {
+        return accueil;
+    }
+
+    public void setAccueil(Utilisateur accueil) {
+        this.accueil = accueil;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.mediflow.mediflow_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,16 +30,39 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/utilisateurs/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+
+                        // Connexion accessible sans authentification
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
+
+                        // Consultation des utilisateurs :
+                        // ADMIN ou ACCUEIL
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/utilisateurs/**"
+                        )
+                        .hasAnyRole("ADMIN", "ACCUEIL")
+
+                        // Gestion des utilisateurs :
+                        // ADMIN uniquement
+                        .requestMatchers("/api/utilisateurs/**")
+                        .hasRole("ADMIN")
+
+                        // Toutes les autres routes nécessitent
+                        // simplement d'être connecté
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .addFilterBefore(
@@ -52,14 +76,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
         configuration.setAllowedOrigins(
                 List.of("http://localhost:4200")
         );
 
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
         configuration.setAllowedHeaders(
@@ -69,7 +100,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
         return source;
     }
