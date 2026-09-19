@@ -18,27 +18,75 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+
+    // =========================
+    // RÉCUPÉRER LES PATIENTS
+    // =========================
+
     @GetMapping
     public List<Patient> getAllPatients() {
         return patientService.getAllPatients();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPatientById(@PathVariable Long id) {
 
-        Optional<Patient> patient = patientService.getPatientById(id);
+    // =========================
+    // RÉCUPÉRER UN PATIENT
+    // =========================
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPatientById(
+            @PathVariable Long id) {
+
+        Optional<Patient> patient =
+                patientService.getPatientById(id);
 
         if (patient.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .notFound()
+                    .build();
         }
 
-        return ResponseEntity.ok(patient.get());
+        return ResponseEntity.ok(
+                patient.get()
+        );
     }
 
+
+    // =========================
+    // CRÉER UN PATIENT
+    // =========================
+
     @PostMapping
-    public Patient createPatient(@RequestBody Patient patient) {
-        return patientService.savePatient(patient);
+    public ResponseEntity<?> createPatient(
+            @RequestBody Patient patient) {
+
+        try {
+
+            Patient patientEnregistre =
+                    patientService.savePatient(
+                            patient
+                    );
+
+            return ResponseEntity.ok(
+                    patientEnregistre
+            );
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            e.getMessage()
+                    );
+        }
     }
+
+
+    // =========================
+    // MODIFIER UN PATIENT
+    // =========================
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePatient(
@@ -49,21 +97,61 @@ public class PatientController {
                 patientService.getPatientById(id);
 
         if (patientOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
         }
 
-        Patient patient = patientOptional.get();
+        Patient patient =
+                patientOptional.get();
 
-        patient.setNom(patientModifie.getNom());
-        patient.setPrenom(patientModifie.getPrenom());
-        patient.setDateNaissance(patientModifie.getDateNaissance());
-        patient.setTelephone(patientModifie.getTelephone());
-        patient.setEmail(patientModifie.getEmail());
-        patient.setAdresse(patientModifie.getAdresse());
+        patient.setNom(
+                patientModifie.getNom()
+        );
 
-        Patient patientEnregistre =
-                patientService.updatePatient(patient);
+        patient.setPrenom(
+                patientModifie.getPrenom()
+        );
 
-        return ResponseEntity.ok(patientEnregistre);
+        patient.setDateNaissance(
+                patientModifie.getDateNaissance()
+        );
+
+        patient.setTelephone(
+                patientModifie.getTelephone()
+        );
+
+        patient.setEmail(
+                patientModifie.getEmail()
+        );
+
+        patient.setAdresse(
+                patientModifie.getAdresse()
+        );
+
+
+        try {
+
+            Patient patientEnregistre =
+                    patientService.updatePatient(
+                            patient
+                    );
+
+            return ResponseEntity.ok(
+                    patientEnregistre
+            );
+
+        } catch (
+                IllegalArgumentException e
+        ) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            e.getMessage()
+                    );
+        }
     }
+
 }
