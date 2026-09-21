@@ -18,7 +18,7 @@ public class PatientService {
             Pattern.compile("^(?:\\+33|0)[1-9]\\d{8}$");
 
     private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+            Pattern.compile("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
 
 
     public PatientService(PatientRepository patientRepository) {

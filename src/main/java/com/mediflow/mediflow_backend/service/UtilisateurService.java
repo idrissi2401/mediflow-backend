@@ -16,7 +16,7 @@ public class UtilisateurService {
     private final PasswordEncoder passwordEncoder;
 
     private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+            Pattern.compile("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,}$");
 
 
     public UtilisateurService(
