@@ -1,5 +1,6 @@
 package com.mediflow.mediflow_backend.controller;
 
+import com.mediflow.mediflow_backend.dto.PatientDto;
 import com.mediflow.mediflow_backend.entity.Patient;
 import com.mediflow.mediflow_backend.service.PatientService;
 import org.springframework.http.ResponseEntity;
@@ -58,9 +59,35 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<?> createPatient(
-            @RequestBody Patient patient) {
+            @RequestBody PatientDto patientDto) {
 
         try {
+
+            Patient patient = new Patient();
+
+            patient.setNom(
+                    patientDto.getNom()
+            );
+
+            patient.setPrenom(
+                    patientDto.getPrenom()
+            );
+
+            patient.setDateNaissance(
+                    patientDto.getDateNaissance()
+            );
+
+            patient.setTelephone(
+                    patientDto.getTelephone()
+            );
+
+            patient.setEmail(
+                    patientDto.getEmail()
+            );
+
+            patient.setAdresse(
+                    patientDto.getAdresse()
+            );
 
             Patient patientEnregistre =
                     patientService.savePatient(
@@ -91,7 +118,7 @@ public class PatientController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePatient(
             @PathVariable Long id,
-            @RequestBody Patient patientModifie) {
+            @RequestBody PatientDto patientDto) {
 
         Optional<Patient> patientOptional =
                 patientService.getPatientById(id);
@@ -107,29 +134,28 @@ public class PatientController {
                 patientOptional.get();
 
         patient.setNom(
-                patientModifie.getNom()
+                patientDto.getNom()
         );
 
         patient.setPrenom(
-                patientModifie.getPrenom()
+                patientDto.getPrenom()
         );
 
         patient.setDateNaissance(
-                patientModifie.getDateNaissance()
+                patientDto.getDateNaissance()
         );
 
         patient.setTelephone(
-                patientModifie.getTelephone()
+                patientDto.getTelephone()
         );
 
         patient.setEmail(
-                patientModifie.getEmail()
+                patientDto.getEmail()
         );
 
         patient.setAdresse(
-                patientModifie.getAdresse()
+                patientDto.getAdresse()
         );
-
 
         try {
 
@@ -153,5 +179,4 @@ public class PatientController {
                     );
         }
     }
-
 }
