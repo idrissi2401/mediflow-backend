@@ -3,6 +3,7 @@ package com.mediflow.mediflow_backend.service;
 import com.mediflow.mediflow_backend.entity.Utilisateur;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,14 +13,17 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "mediflow-secret-key-2026-mediflow-secret-key";
-
     private static final long EXPIRATION = 1000 * 60 * 60;
+
+    private final String secret;
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        this.secret = secret;
+    }
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(
-                SECRET.getBytes(StandardCharsets.UTF_8)
+                secret.getBytes(StandardCharsets.UTF_8)
         );
     }
 
