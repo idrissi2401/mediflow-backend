@@ -1,6 +1,8 @@
 package com.mediflow.mediflow_backend.controller;
 
+import com.mediflow.mediflow_backend.dto.ConsultationDto;
 import com.mediflow.mediflow_backend.entity.Consultation;
+import com.mediflow.mediflow_backend.entity.RendezVous;
 import com.mediflow.mediflow_backend.service.ConsultationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,8 +62,7 @@ public class ConsultationController {
 
 
     // =========================
-    // CONSULTATION PAR
-    // RENDEZ-VOUS
+    // CONSULTATION PAR RDV
     // =========================
 
     @GetMapping("/rendez-vous/{rendezVousId}")
@@ -116,8 +117,11 @@ public class ConsultationController {
 
     @PostMapping
     public Consultation createConsultation(
-            @RequestBody Consultation consultation
+            @RequestBody ConsultationDto consultationDto
     ) {
+
+        Consultation consultation =
+                convertirDto(consultationDto);
 
         return consultationService
                 .saveConsultation(
@@ -133,7 +137,7 @@ public class ConsultationController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateConsultation(
             @PathVariable Long id,
-            @RequestBody Consultation consultationModifiee
+            @RequestBody ConsultationDto consultationDto
     ) {
 
         Optional<Consultation> consultationOptional =
@@ -150,27 +154,23 @@ public class ConsultationController {
         Consultation consultation =
                 consultationOptional.get();
 
-
         consultation.setDateHeure(
-                consultationModifiee
-                        .getDateHeure()
+                consultationDto.getDateHeure()
         );
 
         consultation.setNotes(
-                consultationModifiee
-                        .getNotes()
+                consultationDto.getNotes()
         );
 
         consultation.setDiagnostic(
-                consultationModifiee
-                        .getDiagnostic()
+                consultationDto.getDiagnostic()
         );
 
         consultation.setRendezVous(
-                consultationModifiee
-                        .getRendezVous()
+                creerReferenceRendezVous(
+                        consultationDto
+                )
         );
-
 
         Consultation consultationEnregistree =
                 consultationService
@@ -178,9 +178,62 @@ public class ConsultationController {
                                 consultation
                         );
 
-
         return ResponseEntity.ok(
                 consultationEnregistree
         );
+    }
+
+
+    // =========================
+    // CONVERSION DTO -> ENTITÉ
+    // =========================
+
+    private Consultation convertirDto(
+            ConsultationDto dto
+    ) {
+
+        Consultation consultation =
+                new Consultation();
+
+        consultation.setDateHeure(
+                dto.getDateHeure()
+        );
+
+        consultation.setNotes(
+                dto.getNotes()
+        );
+
+        consultation.setDiagnostic(
+                dto.getDiagnostic()
+        );
+
+        consultation.setRendezVous(
+                creerReferenceRendezVous(dto)
+        );
+
+        return consultation;
+    }
+
+
+    // =========================
+    // RÉFÉRENCE RENDEZ-VOUS
+    // =========================
+
+    private RendezVous creerReferenceRendezVous(
+            ConsultationDto dto
+    ) {
+
+        if (dto.getRendezVous() == null) {
+            return null;
+        }
+
+        RendezVous rendezVous =
+                new RendezVous();
+
+        rendezVous.setId(
+                dto.getRendezVous().getId()
+        );
+
+        return rendezVous;
     }
 }

@@ -1,5 +1,6 @@
 package com.mediflow.mediflow_backend.controller;
 
+import com.mediflow.mediflow_backend.dto.UtilisateurDto;
 import com.mediflow.mediflow_backend.entity.Utilisateur;
 import com.mediflow.mediflow_backend.service.UtilisateurService;
 import org.springframework.http.ResponseEntity;
@@ -63,9 +64,12 @@ public class UtilisateurController {
 
     @PostMapping
     public ResponseEntity<?> createUtilisateur(
-            @RequestBody Utilisateur utilisateur) {
+            @RequestBody UtilisateurDto utilisateurDto) {
 
         try {
+
+            Utilisateur utilisateur =
+                    convertirDto(utilisateurDto);
 
             Utilisateur utilisateurEnregistre =
                     utilisateurService
@@ -91,7 +95,7 @@ public class UtilisateurController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUtilisateur(
             @PathVariable Long id,
-            @RequestBody Utilisateur utilisateurModifie,
+            @RequestBody UtilisateurDto utilisateurDto,
             Authentication authentication) {
 
         Optional<Utilisateur> utilisateurOptional =
@@ -120,7 +124,7 @@ public class UtilisateurController {
                 utilisateur.getEmail()
                         .equalsIgnoreCase(emailUtilisateurConnecte)
                         &&
-                        !utilisateurModifie.isActif()
+                        !utilisateurDto.isActif()
         ) {
 
             return ResponseEntity
@@ -136,23 +140,23 @@ public class UtilisateurController {
         // =========================
 
         utilisateur.setNom(
-                utilisateurModifie.getNom()
+                utilisateurDto.getNom()
         );
 
         utilisateur.setPrenom(
-                utilisateurModifie.getPrenom()
+                utilisateurDto.getPrenom()
         );
 
         utilisateur.setEmail(
-                utilisateurModifie.getEmail()
+                utilisateurDto.getEmail()
         );
 
         utilisateur.setRole(
-                utilisateurModifie.getRole()
+                utilisateurDto.getRole()
         );
 
         utilisateur.setActif(
-                utilisateurModifie.isActif()
+                utilisateurDto.isActif()
         );
 
 
@@ -172,5 +176,43 @@ public class UtilisateurController {
                     .badRequest()
                     .body(e.getMessage());
         }
+    }
+
+
+    // =========================
+    // CONVERSION DTO
+    // =========================
+
+    private Utilisateur convertirDto(
+            UtilisateurDto utilisateurDto) {
+
+        Utilisateur utilisateur =
+                new Utilisateur();
+
+        utilisateur.setNom(
+                utilisateurDto.getNom()
+        );
+
+        utilisateur.setPrenom(
+                utilisateurDto.getPrenom()
+        );
+
+        utilisateur.setEmail(
+                utilisateurDto.getEmail()
+        );
+
+        utilisateur.setMotDePasse(
+                utilisateurDto.getMotDePasse()
+        );
+
+        utilisateur.setRole(
+                utilisateurDto.getRole()
+        );
+
+        utilisateur.setActif(
+                utilisateurDto.isActif()
+        );
+
+        return utilisateur;
     }
 }

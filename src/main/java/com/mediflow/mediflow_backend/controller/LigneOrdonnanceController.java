@@ -1,6 +1,9 @@
 package com.mediflow.mediflow_backend.controller;
 
+import com.mediflow.mediflow_backend.dto.LigneOrdonnanceDto;
+import com.mediflow.mediflow_backend.dto.ReferenceDto;
 import com.mediflow.mediflow_backend.entity.LigneOrdonnance;
+import com.mediflow.mediflow_backend.entity.Ordonnance;
 import com.mediflow.mediflow_backend.service.LigneOrdonnanceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,11 +74,14 @@ public class LigneOrdonnanceController {
 
     @PostMapping
     public LigneOrdonnance createLigne(
-            @RequestBody LigneOrdonnance ligneOrdonnance
+            @RequestBody LigneOrdonnanceDto ligneDto
     ) {
 
+        LigneOrdonnance ligne =
+                convertirDto(ligneDto);
+
         return ligneOrdonnanceService
-                .saveLigne(ligneOrdonnance);
+                .saveLigne(ligne);
     }
 
 
@@ -86,7 +92,7 @@ public class LigneOrdonnanceController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLigne(
             @PathVariable Long id,
-            @RequestBody LigneOrdonnance ligneModifiee
+            @RequestBody LigneOrdonnanceDto ligneDto
     ) {
 
         Optional<LigneOrdonnance> ligneOptional =
@@ -100,23 +106,25 @@ public class LigneOrdonnanceController {
                 ligneOptional.get();
 
         ligne.setMedicament(
-                ligneModifiee.getMedicament()
+                ligneDto.getMedicament()
         );
 
         ligne.setDosage(
-                ligneModifiee.getDosage()
+                ligneDto.getDosage()
         );
 
         ligne.setFrequence(
-                ligneModifiee.getFrequence()
+                ligneDto.getFrequence()
         );
 
         ligne.setDuree(
-                ligneModifiee.getDuree()
+                ligneDto.getDuree()
         );
 
         ligne.setOrdonnance(
-                ligneModifiee.getOrdonnance()
+                creerReferenceOrdonnance(
+                        ligneDto.getOrdonnance()
+                )
         );
 
         LigneOrdonnance ligneEnregistree =
@@ -148,5 +156,62 @@ public class LigneOrdonnanceController {
         ligneOrdonnanceService.deleteLigne(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+
+    // =========================
+    // CONVERSION DTO
+    // =========================
+
+    private LigneOrdonnance convertirDto(
+            LigneOrdonnanceDto ligneDto
+    ) {
+
+        LigneOrdonnance ligne =
+                new LigneOrdonnance();
+
+        ligne.setMedicament(
+                ligneDto.getMedicament()
+        );
+
+        ligne.setDosage(
+                ligneDto.getDosage()
+        );
+
+        ligne.setFrequence(
+                ligneDto.getFrequence()
+        );
+
+        ligne.setDuree(
+                ligneDto.getDuree()
+        );
+
+        ligne.setOrdonnance(
+                creerReferenceOrdonnance(
+                        ligneDto.getOrdonnance()
+                )
+        );
+
+        return ligne;
+    }
+
+
+    private Ordonnance creerReferenceOrdonnance(
+            ReferenceDto referenceDto
+    ) {
+
+        if (referenceDto == null ||
+                referenceDto.getId() == null) {
+            return null;
+        }
+
+        Ordonnance ordonnance =
+                new Ordonnance();
+
+        ordonnance.setId(
+                referenceDto.getId()
+        );
+
+        return ordonnance;
     }
 }

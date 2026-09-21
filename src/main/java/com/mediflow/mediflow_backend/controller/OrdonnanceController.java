@@ -1,5 +1,8 @@
 package com.mediflow.mediflow_backend.controller;
 
+import com.mediflow.mediflow_backend.dto.OrdonnanceDto;
+import com.mediflow.mediflow_backend.dto.ReferenceDto;
+import com.mediflow.mediflow_backend.entity.Consultation;
 import com.mediflow.mediflow_backend.entity.Ordonnance;
 import com.mediflow.mediflow_backend.service.OrdonnanceService;
 import org.springframework.http.ResponseEntity;
@@ -84,8 +87,11 @@ public class OrdonnanceController {
 
     @PostMapping
     public Ordonnance createOrdonnance(
-            @RequestBody Ordonnance ordonnance
+            @RequestBody OrdonnanceDto ordonnanceDto
     ) {
+
+        Ordonnance ordonnance =
+                convertirDto(ordonnanceDto);
 
         return ordonnanceService
                 .saveOrdonnance(ordonnance);
@@ -99,7 +105,7 @@ public class OrdonnanceController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrdonnance(
             @PathVariable Long id,
-            @RequestBody Ordonnance ordonnanceModifiee
+            @RequestBody OrdonnanceDto ordonnanceDto
     ) {
 
         Optional<Ordonnance> ordonnanceOptional =
@@ -114,11 +120,13 @@ public class OrdonnanceController {
                 ordonnanceOptional.get();
 
         ordonnance.setDateHeure(
-                ordonnanceModifiee.getDateHeure()
+                ordonnanceDto.getDateHeure()
         );
 
         ordonnance.setConsultation(
-                ordonnanceModifiee.getConsultation()
+                creerReferenceConsultation(
+                        ordonnanceDto.getConsultation()
+                )
         );
 
         Ordonnance ordonnanceEnregistree =
@@ -128,5 +136,50 @@ public class OrdonnanceController {
         return ResponseEntity.ok(
                 ordonnanceEnregistree
         );
+    }
+
+
+    // =========================
+    // CONVERSION DTO
+    // =========================
+
+    private Ordonnance convertirDto(
+            OrdonnanceDto ordonnanceDto
+    ) {
+
+        Ordonnance ordonnance =
+                new Ordonnance();
+
+        ordonnance.setDateHeure(
+                ordonnanceDto.getDateHeure()
+        );
+
+        ordonnance.setConsultation(
+                creerReferenceConsultation(
+                        ordonnanceDto.getConsultation()
+                )
+        );
+
+        return ordonnance;
+    }
+
+
+    private Consultation creerReferenceConsultation(
+            ReferenceDto referenceDto
+    ) {
+
+        if (referenceDto == null ||
+                referenceDto.getId() == null) {
+            return null;
+        }
+
+        Consultation consultation =
+                new Consultation();
+
+        consultation.setId(
+                referenceDto.getId()
+        );
+
+        return consultation;
     }
 }
